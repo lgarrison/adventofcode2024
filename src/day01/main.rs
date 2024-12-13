@@ -1,13 +1,14 @@
-use std::fs;
 use std::collections::HashMap;
-
+use std::fs;
 
 fn get_vecs(txt: &str) -> (Vec<u64>, Vec<u64>) {
-    let (mut vec1, mut vec2): (Vec<_>, Vec<_>) = txt.lines().map(|line| {
-        let mut parts =
-            line.split_whitespace().map(|x| x.parse::<u64>().unwrap());
-        (parts.next().unwrap(), parts.next().unwrap())
-    }).unzip();
+    let (mut vec1, mut vec2): (Vec<_>, Vec<_>) = txt
+        .lines()
+        .map(|line| {
+            let mut parts = line.split_whitespace().map(|x| x.parse::<u64>().unwrap());
+            (parts.next().unwrap(), parts.next().unwrap())
+        })
+        .unzip();
     vec1.sort();
     vec2.sort();
     (vec1, vec2)
@@ -15,9 +16,11 @@ fn get_vecs(txt: &str) -> (Vec<u64>, Vec<u64>) {
 
 fn part1(txt: &str) -> u64 {
     let (vec1, vec2): (Vec<_>, Vec<_>) = get_vecs(txt);
-    
-    
-    vec1.iter().zip(vec2.iter()).map(|(&x, &y)| x.abs_diff(y)).sum()
+
+    vec1.iter()
+        .zip(vec2.iter())
+        .map(|(&x, &y)| x.abs_diff(y))
+        .sum()
 }
 
 fn part2(txt: &str) -> u64 {
@@ -26,9 +29,7 @@ fn part2(txt: &str) -> u64 {
     for &y in vec2.iter() {
         *counter.entry(y).or_insert(0) += 1;
     }
-    vec1.iter().map(|x| {
-        x * counter.get(x).unwrap_or(&0)
-    }).sum()
+    vec1.iter().map(|x| x * counter.get(x).unwrap_or(&0)).sum()
 }
 
 fn main() {

@@ -1,4 +1,8 @@
-use std::{collections::{HashMap, HashSet}, fs, ops::{Add, Sub, Mul}};
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+    ops::{Add, Mul, Sub},
+};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Copy, Clone, Debug)]
 struct Point {
@@ -17,13 +21,16 @@ const N: isize = 50;
 impl Antennas {
     fn from_str(txt: &str) -> Self {
         let mut ant = HashMap::new();
-        txt.lines().enumerate().for_each(|(i, line)|
-            line.chars().enumerate().for_each(|(j, char)|
+        txt.lines().enumerate().for_each(|(i, line)| {
+            line.chars().enumerate().for_each(|(j, char)| {
                 if char != '.' {
-                    ant.entry(char).or_insert_with(Vec::new).push(Point{i: i as isize, j: j as isize})
+                    ant.entry(char).or_insert_with(Vec::new).push(Point {
+                        i: i as isize,
+                        j: j as isize,
+                    })
                 }
-            )
-        );
+            })
+        });
         Antennas(ant)
     }
 }
@@ -76,17 +83,14 @@ impl Mul<isize> for Point {
 }
 
 impl Point {
-    fn antinodes(self, other: Point) -> [Point;2] {
-        [
-            self + (self - other),
-            other + (other - self),
-        ]
+    fn antinodes(self, other: Point) -> [Point; 2] {
+        [self + (self - other), other + (other - self)]
     }
 
     fn antinodes_p2(self, other: Point) -> Vec<Point> {
         let delta = other - self;
         let mut v: Vec<Point> = vec![];
-        
+
         for k in 0..N {
             let p = self + delta * k;
             if p.in_bounds() {
@@ -118,7 +122,7 @@ fn part1(txt: &str) -> usize {
     let mut antinodes = Antinodes::new();
     for (_c, v) in antennas.0.iter() {
         for (i, a) in v.iter().enumerate() {
-            for b in v[i+1..].iter() {
+            for b in v[i + 1..].iter() {
                 for x in a.antinodes(*b) {
                     antinodes.set(x);
                 }
@@ -135,7 +139,7 @@ fn part2(txt: &str) -> usize {
     let mut antinodes = Antinodes::new();
     for (_c, v) in antennas.0.iter() {
         for (i, a) in v.iter().enumerate() {
-            for b in v[i+1..].iter() {
+            for b in v[i + 1..].iter() {
                 for x in a.antinodes_p2(*b) {
                     antinodes.set(x);
                 }

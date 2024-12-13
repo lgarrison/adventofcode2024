@@ -19,7 +19,16 @@ enum Dir {
     NW,
 }
 
-const DIRS: [Dir; 8] = [Dir::N, Dir::NE, Dir::E, Dir::SE, Dir::S, Dir::SW, Dir::W, Dir::NW];
+const DIRS: [Dir; 8] = [
+    Dir::N,
+    Dir::NE,
+    Dir::E,
+    Dir::SE,
+    Dir::S,
+    Dir::SW,
+    Dir::W,
+    Dir::NW,
+];
 
 impl Dir {
     fn mirror(&self) -> Self {
@@ -106,7 +115,16 @@ impl Grid {
                 let c = self.get(i, j);
                 if c > 0 {
                     let mut keep = false;
-                    for dir in vec![Dir::N, Dir::NE, Dir::E, Dir::SE, Dir::S, Dir::SW, Dir::W, Dir::NW] {
+                    for dir in vec![
+                        Dir::N,
+                        Dir::NE,
+                        Dir::E,
+                        Dir::SE,
+                        Dir::S,
+                        Dir::SW,
+                        Dir::W,
+                        Dir::NW,
+                    ] {
                         let d = self.neigh(i, j, dir, 1);
                         if d > 0 && c.abs_diff(d) == 1 {
                             if c == 1 || c == 4 {

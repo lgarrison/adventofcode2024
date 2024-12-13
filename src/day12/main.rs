@@ -9,8 +9,7 @@ struct Grid {
 
 impl Grid {
     fn from_str(txt: &str) -> Self {
-        let grid = txt.chars()
-            .filter(|&c| c != '\n').collect();
+        let grid = txt.chars().filter(|&c| c != '\n').collect();
         let n = txt.lines().count() as isize;
         let m = txt.lines().next().unwrap().len() as isize;
         Grid { grid, N: n, M: m }
@@ -24,14 +23,20 @@ impl Grid {
         }
     }
 
-    fn flood(&self, i: isize, j: isize, seen: &mut HashSet<[isize; 2]>, discount: bool) -> Option<[isize; 2]> {
+    fn flood(
+        &self,
+        i: isize,
+        j: isize,
+        seen: &mut HashSet<[isize; 2]>,
+        discount: bool,
+    ) -> Option<[isize; 2]> {
         if seen.contains(&[i, j]) {
             return None;
         }
         if let Some(c) = self.get(i, j) {
             seen.insert([i, j]);
             let mut area = 1;
-            
+
             let mut perimeter = 4;
             for [di, dj] in [[-1isize, 0], [1, 0], [0, -1], [0, 1]] {
                 let mut lostedge = false;
@@ -39,7 +44,7 @@ impl Grid {
                     if d == c {
                         perimeter -= 1;
                         lostedge = true;
-                        if let Some(ap) = self.flood(i + di, j + dj, seen, discount){
+                        if let Some(ap) = self.flood(i + di, j + dj, seen, discount) {
                             area += ap[0];
                             perimeter += ap[1];
                         }
@@ -51,14 +56,13 @@ impl Grid {
                     // This means we need to decrement perimeter if we are a continuation.
 
                     // first, look one square over 90 degrees counterclockwise
-                    let dd = if dj == 0 { [0,di] } else { [-dj,0] };
+                    let dd = if dj == 0 { [0, di] } else { [-dj, 0] };
 
                     if let Some(e) = self.get(i + dd[0], j + dd[1]) {
                         // if that square matches ours, we might need to lose the edge. keep checking.
                         if e == c {
                             // now, check one more square over, in the direction of the edge
                             if let Some(f) = self.get(i + dd[0] + di, j + dd[1] + dj) {
-                            
                                 // if that square does not match ours, then we know that our neighbor
                                 // already has an edge going. lose our edge.
                                 if c != f {

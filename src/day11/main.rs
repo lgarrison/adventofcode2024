@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fs};
 
-fn count(stone: i64, rounds_left: i64, memo: &mut HashMap<[i64;2],i64>) -> i64 {
+fn count(stone: i64, rounds_left: i64, memo: &mut HashMap<[i64; 2], i64>) -> i64 {
     // println!("stone: {}, rounds_left: {}", stone, rounds_left);
     if rounds_left == 0 {
         return 1;
@@ -24,7 +24,6 @@ fn count(stone: i64, rounds_left: i64, memo: &mut HashMap<[i64;2],i64>) -> i64 {
         } else {
             count(stone * 2024, rounds_left - 1, memo)
         }
-        
     };
 
     memo.insert([stone, rounds_left], res);
@@ -33,10 +32,8 @@ fn count(stone: i64, rounds_left: i64, memo: &mut HashMap<[i64;2],i64>) -> i64 {
 
 fn part1(txt: &str) -> i64 {
     txt.split_ascii_whitespace()
-       .map(|w| count(w.parse::<i64>().unwrap(),
-                            75,
-                            &mut HashMap::new())
-        ).sum()
+        .map(|w| count(w.parse::<i64>().unwrap(), 75, &mut HashMap::new()))
+        .sum()
 }
 
 fn part2(txt: &str) -> i64 {

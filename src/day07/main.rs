@@ -27,15 +27,21 @@ fn try_ops(res: i64, first: i64, vals: &[i64]) -> bool {
 }
 
 fn part1(txt: &str) -> i64 {
-    txt.lines().map(|line|{
-        let mut nums = line.split_ascii_whitespace().map(
-            |w| w.trim_end_matches(':').parse::<i64>().unwrap()
-        );
-        let res = nums.next().unwrap();
-        let vals: Vec<i64> = nums.collect();
+    txt.lines()
+        .map(|line| {
+            let mut nums = line
+                .split_ascii_whitespace()
+                .map(|w| w.trim_end_matches(':').parse::<i64>().unwrap());
+            let res = nums.next().unwrap();
+            let vals: Vec<i64> = nums.collect();
 
-        if try_ops(res, vals[0], &vals[1..]) { res } else { 0 }
-    }).sum()
+            if try_ops(res, vals[0], &vals[1..]) {
+                res
+            } else {
+                0
+            }
+        })
+        .sum()
 }
 
 fn part2(txt: &str) -> i64 {

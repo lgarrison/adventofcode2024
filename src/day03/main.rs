@@ -1,17 +1,18 @@
-use std::fs;
 use regex::Regex;
+use std::fs;
 
 fn part1(txt: &str) -> i64 {
     let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
     let caps = re.captures_iter(txt);
-    caps.map(|c| c[1].parse::<i64>().unwrap() * c[2].parse::<i64>().unwrap()).sum()
+    caps.map(|c| c[1].parse::<i64>().unwrap() * c[2].parse::<i64>().unwrap())
+        .sum()
 }
 
 fn part2(txt: &str) -> i64 {
     let re = Regex::new(r"(mul)\((\d+),(\d+)\)|(do|don't)\(\)").unwrap();
     let caps = re.captures_iter(txt);
     let mut doit = true;
-    caps.filter_map(|c|
+    caps.filter_map(|c| {
         if c.get(1).is_some() && doit {
             Some(c[2].parse::<i64>().unwrap() * c[3].parse::<i64>().unwrap())
         } else {
@@ -23,7 +24,8 @@ fn part2(txt: &str) -> i64 {
             }
             None
         }
-    ).sum()
+    })
+    .sum()
 }
 
 fn main() {

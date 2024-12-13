@@ -1,6 +1,6 @@
 use std::fs;
 
-#[derive(Debug,Clone,Copy)]
+#[derive(Debug, Clone, Copy)]
 struct Block {
     len: isize,
     id: isize,
@@ -8,10 +8,18 @@ struct Block {
 }
 
 impl Block {
-    fn split(&self, n: isize) -> [Block;2] {
+    fn split(&self, n: isize) -> [Block; 2] {
         [
-            Block{ len: n, id: self.id, free: self.free},
-            Block{ len: self.len - n, id: self.id, free: self.free},
+            Block {
+                len: n,
+                id: self.id,
+                free: self.free,
+            },
+            Block {
+                len: self.len - n,
+                id: self.id,
+                free: self.free,
+            },
         ]
     }
 }
@@ -54,7 +62,7 @@ fn defrag(disk_map: &mut DiskMap) {
             i += 1;
         }
 
-        if i >= j { 
+        if i >= j {
             continue;
         }
 
@@ -62,7 +70,7 @@ fn defrag(disk_map: &mut DiskMap) {
         assert!(!disk_map[j].free);
 
         let b3 = disk_map.remove(j);
-        
+
         // split the free space
         let [b1, b2] = disk_map[i].split(b3.len);
 
@@ -70,7 +78,7 @@ fn defrag(disk_map: &mut DiskMap) {
         disk_map.insert(j, b1);
 
         if b2.len > 0 {
-            disk_map.insert(i+1, b2);
+            disk_map.insert(i + 1, b2);
             j += 1;
         }
         // disk_map.swap(i, j);
@@ -78,23 +86,38 @@ fn defrag(disk_map: &mut DiskMap) {
 }
 
 fn checksum(disk_map: &DiskMap) -> isize {
-    full_map(&disk_map).iter().enumerate().map(
-            |(i, id)| i as isize * id
-        ).sum()
+    full_map(&disk_map)
+        .iter()
+        .enumerate()
+        .map(|(i, id)| i as isize * id)
+        .sum()
 }
 
 fn part1(txt: &str) -> isize {
-    let mut disk_map: DiskMap = txt.char_indices().flat_map(|(i, c)|
-      [Block { len: 1, id: (i / 2) as isize, free: i % 2 == 1 } ].repeat(c.to_digit(10).unwrap() as usize)
-    ).collect();
+    let mut disk_map: DiskMap = txt
+        .char_indices()
+        .flat_map(|(i, c)| {
+            [Block {
+                len: 1,
+                id: (i / 2) as isize,
+                free: i % 2 == 1,
+            }]
+            .repeat(c.to_digit(10).unwrap() as usize)
+        })
+        .collect();
     defrag(&mut disk_map);
     checksum(&disk_map)
 }
 
 fn part2(txt: &str) -> isize {
-    let mut disk_map: DiskMap = txt.char_indices().map(|(i, c)|
-      Block { len: c.to_digit(10).unwrap() as isize, id: (i / 2) as isize, free: i % 2 == 1 } 
-    ).collect();
+    let mut disk_map: DiskMap = txt
+        .char_indices()
+        .map(|(i, c)| Block {
+            len: c.to_digit(10).unwrap() as isize,
+            id: (i / 2) as isize,
+            free: i % 2 == 1,
+        })
+        .collect();
     defrag(&mut disk_map);
     checksum(&disk_map)
 }

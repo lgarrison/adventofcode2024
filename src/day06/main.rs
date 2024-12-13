@@ -57,12 +57,21 @@ impl Grid {
                 grid[i * cols + j] = match c {
                     '.' => 0,
                     '#' => 1,
-                    '^' => {guard_pos = [i, j]; 0},
+                    '^' => {
+                        guard_pos = [i, j];
+                        0
+                    }
                     _ => panic!("Invalid character"),
                 }
             }
         }
-        Grid { rows, cols, grid, pos: guard_pos, dir: Dir::N }
+        Grid {
+            rows,
+            cols,
+            grid,
+            pos: guard_pos,
+            dir: Dir::N,
+        }
     }
 
     fn guard_cast(&mut self) -> isize {
@@ -77,22 +86,31 @@ impl Grid {
 
             self.set(self.pos[0], self.pos[1], val | marker);
 
-            if (self.pos[0] == 0 && step[0] == -1) ||
-                (self.pos[0] == self.rows - 1 && step[0] == 1) ||
-                (self.pos[1] == 0 && step[1] == -1) ||
-                (self.pos[1] == self.cols - 1 && step[1] == 1) {
+            if (self.pos[0] == 0 && step[0] == -1)
+                || (self.pos[0] == self.rows - 1 && step[0] == 1)
+                || (self.pos[1] == 0 && step[1] == -1)
+                || (self.pos[1] == self.cols - 1 && step[1] == 1)
+            {
                 left = true;
                 break;
             }
 
-            if self.get((self.pos[0] as isize + step[0]) as usize, (self.pos[1] as isize + step[1]) as usize) == 1 {
+            if self.get(
+                (self.pos[0] as isize + step[0]) as usize,
+                (self.pos[1] as isize + step[1]) as usize,
+            ) == 1
+            {
                 break;
             }
-            
+
             self.pos[0] = (self.pos[0] as isize + step[0]) as usize;
             self.pos[1] = (self.pos[1] as isize + step[1]) as usize;
         }
-        if left { 1 } else { 0 }
+        if left {
+            1
+        } else {
+            0
+        }
     }
 
     fn get(&self, i: usize, j: usize) -> isize {
@@ -123,22 +141,24 @@ fn part1(txt: &str) -> i64 {
 fn part2(txt: &str) -> i64 {
     let mut _grid = Grid::from_str(txt);
 
-    (0.._grid.rows).flat_map(|i| {
-        println!("{:?}", i);
-        (0.._grid.cols).map(move |j| {
-            let mut grid = Grid::from_str(txt);
-            grid.set(i, j, 1);
-            loop {
-                let ret = grid.guard_cast();
-                if ret == 1 {
-                    return 0;
-                } else if ret == 2 {
-                    return 1;
+    (0.._grid.rows)
+        .flat_map(|i| {
+            println!("{:?}", i);
+            (0.._grid.cols).map(move |j| {
+                let mut grid = Grid::from_str(txt);
+                grid.set(i, j, 1);
+                loop {
+                    let ret = grid.guard_cast();
+                    if ret == 1 {
+                        return 0;
+                    } else if ret == 2 {
+                        return 1;
+                    }
+                    grid.dir = grid.dir.turn_right();
                 }
-                grid.dir = grid.dir.turn_right();
-            }
+            })
         })
-    }).sum::<isize>() as i64
+        .sum::<isize>() as i64
 }
 fn main() {
     let day_x = env!("CARGO_BIN_NAME");

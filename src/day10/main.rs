@@ -15,7 +15,7 @@ struct Point {
 
 impl Point {
     fn new(i: isize, j: isize) -> Self {
-        Point{i: i, j: j}
+        Point { i: i, j: j }
     }
 }
 
@@ -34,17 +34,24 @@ impl std::fmt::Display for Point {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "({}, {})", self.i, self.j)
     }
- }
+}
 
 impl Grid {
     fn from_str(txt: &str) -> Self {
         let M = txt.lines().next().unwrap().len();
         let N = txt.lines().count();
-        let grid: Vec<i8> = txt.chars().filter_map(|c| c.to_digit(10).and_then(|c| Some(c as i8))).collect();
+        let grid: Vec<i8> = txt
+            .chars()
+            .filter_map(|c| c.to_digit(10).and_then(|c| Some(c as i8)))
+            .collect();
 
         assert!(N * M == grid.len());
 
-        Grid {grid: grid, N: N as isize, M: M as isize}
+        Grid {
+            grid: grid,
+            N: N as isize,
+            M: M as isize,
+        }
     }
 
     fn get(&self, p: Point) -> Option<i8> {
@@ -57,20 +64,32 @@ impl Grid {
 
     fn moves(&self, p: Point) -> Vec<Point> {
         let h = self.get(p).unwrap();
-        [Point::new(-1,0), Point::new(1,0), Point::new(0,-1), Point::new(0,1)].iter().filter_map(
-            |&dp| {
-                let nextp = p + dp;
-                self.get(nextp).and_then(|v| if v == h + 1 { Some(nextp) } else { None })
-            }
-        ).collect()
+        [
+            Point::new(-1, 0),
+            Point::new(1, 0),
+            Point::new(0, -1),
+            Point::new(0, 1),
+        ]
+        .iter()
+        .filter_map(|&dp| {
+            let nextp = p + dp;
+            self.get(nextp)
+                .and_then(|v| if v == h + 1 { Some(nextp) } else { None })
+        })
+        .collect()
     }
 
     fn points(&self) -> Vec<Point> {
-        (0..self.N).flat_map(|i| (0..self.M).map(move |j| Point::new(i,j))).collect()
+        (0..self.N)
+            .flat_map(|i| (0..self.M).map(move |j| Point::new(i, j)))
+            .collect()
     }
 
     fn trailheads(&self) -> Vec<Point> {
-        self.points().into_iter().filter(|&p| self.get(p).unwrap() == 0).collect()
+        self.points()
+            .into_iter()
+            .filter(|&p| self.get(p).unwrap() == 0)
+            .collect()
     }
 
     fn count_reachable_peaks(&self, p: Point, visited: &mut HashSet<Point>) -> isize {
@@ -83,9 +102,11 @@ impl Grid {
             return 1;
         }
 
-        self.moves(p).iter()
+        self.moves(p)
+            .iter()
             // .inspect(|&next| println!("{} -> {}", p, next))
-            .map(|&next| self.count_reachable_peaks(next, visited)).sum()
+            .map(|&next| self.count_reachable_peaks(next, visited))
+            .sum()
     }
 
     fn count_trails(&self, p: Point) -> isize {
@@ -93,9 +114,11 @@ impl Grid {
             return 1;
         }
 
-        self.moves(p).iter()
+        self.moves(p)
+            .iter()
             // .inspect(|&next| println!("{} -> {}", p, next))
-            .map(|&next| self.count_trails(next)).sum()
+            .map(|&next| self.count_trails(next))
+            .sum()
     }
 }
 
@@ -113,9 +136,7 @@ fn score_p1(grid: &Grid) -> isize {
 fn score_p2(grid: &Grid) -> isize {
     grid.trailheads()
         .iter()
-        .map(|&t| {
-            grid.count_trails(t)
-        })
+        .map(|&t| grid.count_trails(t))
         // .inspect(|c| println!("{} reachable", c))
         .sum()
 }

@@ -9,10 +9,12 @@ struct Update {
 }
 
 fn parse_rules(txt: &str) -> Vec<Rule> {
-    txt.lines().map(|l| {
-        let mut r = l.split("|").map(|c| c.parse::<isize>().unwrap());
-        [r.next().unwrap(), r.next().unwrap()]
-    }).collect()
+    txt.lines()
+        .map(|l| {
+            let mut r = l.split("|").map(|c| c.parse::<isize>().unwrap());
+            [r.next().unwrap(), r.next().unwrap()]
+        })
+        .collect()
 }
 
 // fn argsort(data: &Vec<isize>) -> Vec<isize> {
@@ -23,33 +25,52 @@ fn parse_rules(txt: &str) -> Vec<Rule> {
 
 impl Update {
     fn from_str(txt: &str) -> Vec<Update> {
-        txt.lines().map(|l| {
-            let v: Vec<isize> = l.split(",").map(|c| c.parse::<isize>().unwrap()).collect();
-            Update {
-                map: HashMap::from_iter(v.iter().enumerate().map(|(i,x)| (*x, i as isize))),
-                mid: *v.get(v.len()/2).unwrap()
-            }
-        }).collect()
+        txt.lines()
+            .map(|l| {
+                let v: Vec<isize> = l.split(",").map(|c| c.parse::<isize>().unwrap()).collect();
+                Update {
+                    map: HashMap::from_iter(v.iter().enumerate().map(|(i, x)| (*x, i as isize))),
+                    mid: *v.get(v.len() / 2).unwrap(),
+                }
+            })
+            .collect()
     }
 
     fn check_rules(&self, rules: &Vec<Rule>) -> bool {
-        rules.iter().all(|rule|
-            self.map.get(&rule[0]).and_then(|i| 
-                self.map.get(&rule[1]).and_then(|j| Some(i < j)).or(Some(true))
-            ).or(Some(true)).unwrap()
-        )
+        rules.iter().all(|rule| {
+            self.map
+                .get(&rule[0])
+                .and_then(|i| {
+                    self.map
+                        .get(&rule[1])
+                        .and_then(|j| Some(i < j))
+                        .or(Some(true))
+                })
+                .or(Some(true))
+                .unwrap()
+        })
     }
 }
 
 fn parse(txt: &str) -> (Vec<Rule>, Vec<Update>) {
     let mut t = txt.split("\n\n");
-    (parse_rules(t.next().unwrap()), Update::from_str(t.next().unwrap()))
+    (
+        parse_rules(t.next().unwrap()),
+        Update::from_str(t.next().unwrap()),
+    )
 }
 
 fn part1(txt: &str) -> isize {
     let (rules, updates) = parse(txt);
-    updates.iter()
-        .filter_map(|update| if update.check_rules(&rules) { Some(update.mid) } else { None } )
+    updates
+        .iter()
+        .filter_map(|update| {
+            if update.check_rules(&rules) {
+                Some(update.mid)
+            } else {
+                None
+            }
+        })
         .sum()
 }
 
