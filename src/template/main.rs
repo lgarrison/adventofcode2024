@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use std::fs;
 
 fn part1(txt: &str) -> i64 {
