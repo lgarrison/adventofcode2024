@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 regex = "1.11.1"
+rayon = "1.10.0"
 
 [[bin]]
 name = "template"
@@ -89,3 +90,7 @@ path = "src/day19/main.rs"
 [[bin]]
 name = "day20"
 path = "src/day20/main.rs"
+
+[[bin]]
+name = "day22"
+path = "src/day22/main.rs"
